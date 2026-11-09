@@ -1,0 +1,23 @@
+name: Merge
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  image-push:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "image-push - Task 4 builds the image and pushes it here"
+
+  deploy:
+    needs: image-push
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "deploy - Task 6 deploys the image here"
+
+  smoke-test:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "smoke-test - Task 6 calls the deployed app here"

@@ -1,0 +1,16 @@
+name: Branch
+
+on:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "lint - Task 7 runs ruff here"
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "unit-tests - Task 7 runs pytest here"

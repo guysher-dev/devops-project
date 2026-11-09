@@ -1,0 +1,34 @@
+name: PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "lint"
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "unit-tests"
+
+  image-build:
+    needs: [lint, unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "image-build"
+
+  integration-tests:
+    needs: image-build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "integration-tests"
+
+  security:
+    needs: image-build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "security"
