@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------
+# Configuration for the pr-reviewer app.
+#
+# Every key is optional. The values below are the built-in defaults, so a file
+# with nothing but comments behaves exactly like this one.
+#
+# READ FROM `main` ONLY:
+#   - The app loads this file from the default branch, never from the branch
+#     it is reviewing.
+#   - That stops a pull request rewriting the rules it is judged by.
+#   - So editing this file inside a pull request does nothing until it merges.
+#
+# FORMAT — a deliberately tiny slice of YAML:
+#   - One `key: value` per line.
+#   - Blank lines and `#` comments allowed.
+#   - No indentation, no lists, no quotes, no unknown keys.
+#   - Anything else: the whole file is rejected, the line number logged, and
+#     the defaults used instead.
+# ---------------------------------------------------------------------------
+
+
+# rounds — how many times the app requests changes before approving.
+#
+#   0   approve on sight, never request changes
+#   1   request changes once, approve on the next push   (default)
+#   3   three rounds of back-and-forth before approval
+#
+# One round = one "changes requested" review that you answer by pushing again.
+# The app counts by reading its own past reviews on the pull request. It
+# stores nothing of its own.
+rounds: 1
+
+
+# merge — WHO presses the merge button. And if it is the app, HOW it merges.
+#
+#   never    the app approves and stops. You press Merge.        (default)
+#   merge    the app merges it itself, as a merge commit
+#   squash   the app merges it itself, squashing to one commit
+#   rebase   the app merges it itself, by rebasing
+#
+# This is NOT a merge-style setting for the repository:
+#   - `merge: squash` means "the app presses Merge, choosing Squash and merge".
+#   - It does NOT mean "when someone merges, squash it".
+#   - This file has no say over how *you* merge. That button is yours.
+#   - Which is why "whether" and "how" are one key.
+#
+# Notes:
+#   - Anything but `never` needs the Contents: Read & write permission.
+#   - If a merge is impossible right then — conflict, check still running,
+#     branch behind `main` — the app gives up quietly.
+#   - It never withdraws its approval.
+#
+# Keep this at `never` while practising. Pressing Merge yourself, then
+# deleting the branch, is part of the loop you are learning.
+merge: never
+
+
+# ---------------------------------------------------------------------------
+# Not settings, but worth knowing:
+#
+#   - There is no `delay` key. Reviews always arrive ~10 seconds after the
+#     event. A file containing a `delay:` line is rejected outright.
+#   - Labels beat this file. On any one pull request, `reviewer:approve` or
+#     `reviewer:request-changes` overrides whatever is set here.
+#     See README.md.
+# ---------------------------------------------------------------------------
