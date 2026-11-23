@@ -8,7 +8,13 @@ jobs:
   image-push:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "image-push - Task 4 builds the image and pushes it here"
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/devops-project:${{ github.sha }} .
+      - run: docker push ${{ vars.DOCKERHUB_USERNAME }}/devops-project:${{ github.sha }}
 
   deploy:
     needs: image-push
