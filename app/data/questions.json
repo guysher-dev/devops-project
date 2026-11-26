@@ -1,0 +1,39 @@
+[
+ {"id": "days", "text": "כמה ימים יש לכם ביפן?", "type": "number", "min": 3, "max": 18},
+ {"id": "kansai", "text": "לשלב גם את נגויה ואוסקה, או להישאר באזור טוקיו?", "type": "choice", "options": [
+  {"value": "yes", "label": "גם נגויה ואוסקה", "set": true},
+  {"value": "no", "label": "רק טוקיו והסביבה", "set": false}]},
+ {"id": "car", "text": "מוכנים לנהוג ביפן? צריך רישיון נהיגה בינלאומי", "type": "choice", "options": [
+  {"value": "yes", "label": "כן", "set": true},
+  {"value": "no", "label": "לא", "set": false}]},
+ {"id": "tours", "text": "יום טיול מאורגן מחוץ לעיר, כמו הקופים בשלג או פוג׳י?", "type": "choice", "options": [
+  {"value": "yes", "label": "כן", "set": true},
+  {"value": "no", "label": "לא", "set": false}]},
+ {"id": "pace", "text": "איזה קצב?", "type": "choice", "options": [
+  {"value": "relaxed", "label": "רגוע, רק העיקר", "set": "relaxed"},
+  {"value": "full", "label": "מלא, כל מה שאפשר", "set": "full"}]},
+ {"id": "who", "text": "עם מי אתם נוסעים?", "type": "choice", "options": [
+  {"value": "solo", "label": "לבד", "weights": {}},
+  {"value": "couple", "label": "זוג", "weights": {"views": 1}},
+  {"value": "friends", "label": "חברים", "weights": {"nightlife": 1}},
+  {"value": "family", "label": "משפחה עם ילדים", "weights": {"family": 3, "nightlife": -2}}]},
+ {"id": "food", "text": "כמה חשוב לכם האוכל?", "type": "level", "tag": "food"},
+ {"id": "shopping", "text": "קניות?", "type": "level", "tag": "shopping"},
+ {"id": "fashion", "text": "סטריטוור, סניקרס ווינטג׳?", "type": "level", "tag": "fashion"},
+ {"id": "cars", "text": "רכבים ותרבות JDM?", "type": "level", "tag": "cars"},
+ {"id": "culture", "text": "מקדשים וטירות?", "type": "level", "tag": "culture"},
+ {"id": "anime", "text": "אנימה וג׳יבלי?", "type": "level", "tag": "anime"},
+ {"id": "games", "text": "נינטנדו, פוקימון וגיימינג?", "type": "level", "tag": "games"},
+ {"id": "nightlife", "text": "בארים, איזקאיות וחיי לילה?", "type": "level", "tag": "nightlife"},
+ {"id": "views", "text": "תצפיות ושקיעות?", "type": "level", "tag": "views"},
+ {"id": "nature", "text": "טבע ושלג?", "type": "level", "tag": "nature"},
+ {"id": "sport", "text": "סומו?", "type": "level", "tag": "sport"},
+ {"id": "family", "text": "אקווריום ומקומות לכל המשפחה?", "type": "level", "tag": "family"},
+ {"id": "budget", "text": "מה התקציב?", "type": "choice", "options": [
+  {"value": "low", "label": "חסכוני", "weights": {"shopping": -1}},
+  {"value": "mid", "label": "רגיל", "weights": {}},
+  {"value": "high", "label": "לא מתקמצנים", "weights": {"food": 1, "shopping": 1}}]},
+ {"id": "cold", "text": "קור ושלג מפריעים לכם?", "type": "choice", "options": [
+  {"value": "yes", "label": "כן, מעדיפים בפנים", "weights": {"nature": -2}},
+  {"value": "no", "label": "לא, בכיף", "weights": {}}]}
+]

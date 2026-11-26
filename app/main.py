@@ -2,6 +2,8 @@ from datetime import date
 
 from flask import Flask, jsonify, request
 
+from app.matcher import QUESTIONS, make_plan, read_answers
+
 app = Flask(__name__)
 
 books = {}
@@ -86,6 +88,19 @@ def delete_book(book_id):
         return jsonify(detail="book not found"), 404
     del books[book_id]
     return "", 204
+
+
+@app.get("/api/questions")
+def list_questions():
+    return jsonify(QUESTIONS)
+
+
+@app.post("/api/plan")
+def plan():
+    profile, error = read_answers(request.get_json(silent=True))
+    if error:
+        return jsonify(detail=error), 422
+    return jsonify(make_plan(profile))
 
 
 @app.errorhandler(404)
