@@ -25,6 +25,12 @@ def answers(**changes):
     return data
 
 
+def test_quiz_page(client):
+    r = client.get("/")
+    assert r.status_code == 200
+    assert "Japan Trip Matcher" in r.get_data(as_text=True)
+
+
 def test_questions(client):
     r = client.get("/api/questions")
     assert r.status_code == 200
@@ -94,6 +100,23 @@ def test_bad_answer(client):
 
 def test_plan_not_json(client):
     r = client.post("/api/plan", data="hello")
+    assert r.status_code == 422
+
+
+def test_trip_page(client):
+    r = client.post("/trip", data=answers())
+    assert r.status_code == 200
+    assert "הטיול שלי ליפן" in r.get_data(as_text=True)
+
+
+def test_trip_download(client):
+    r = client.post("/trip", data=answers(download="1"))
+    assert r.status_code == 200
+    assert "attachment" in r.headers["Content-Disposition"]
+
+
+def test_trip_form_error(client):
+    r = client.post("/trip", data={"days": "5"})
     assert r.status_code == 422
 
 
