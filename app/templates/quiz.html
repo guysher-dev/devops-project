@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Japan Trip Matcher</title>
+<style>
+:root{--ink:#1b1530;--ink2:#4b4466;--paper:#fff8ec;--card:#fff;--line:#eadfce;--pink:#ff4f9a;--purple:#6c3bd1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Rubik","Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:640px;margin:0 auto;padding:16px}
+header{background:var(--purple);color:#fff;border-radius:16px;padding:18px;margin-bottom:14px}
+header h1{margin:0 0 4px;font-size:24px}
+header p{margin:0;font-size:15px}
+.q{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.q legend,.q label.t{font-weight:600;padding:0;margin-bottom:8px;display:block}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts label{border:2px solid var(--line);border-radius:10px;padding:5px 12px;cursor:pointer;font-size:15px}
+.opts input{margin:0 0 0 6px}
+.opts label:has(input:checked){border-color:var(--purple);background:#f3eefc}
+input[type=number]{font-size:16px;padding:6px 10px;border:2px solid var(--line);border-radius:10px;width:100px}
+.err{background:#ffe8ef;border:2px solid var(--pink);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 30px}
+button{font-size:16px;border:0;border-radius:12px;padding:12px 18px;cursor:pointer;color:#fff;background:var(--purple)}
+button.dl{background:var(--pink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>הטיול שלך ליפן</h1>
+<p>{{ questions|length }} שאלות, ומקבלים מסלול אישי מטיול אמיתי: אטרקציות, איך מגיעים, ואיפה אוכלים.</p>
+</header>
+
+{% if error %}<div class="err">חסרה תשובה או שהיא לא תקינה: {{ error }}</div>{% endif %}
+
+<form method="post" action="/trip">
+{% for q in questions %}
+<div class="q">
+{% if q.type == "number" %}
+<label class="t" for="{{ q.id }}">{{ loop.index }}. {{ q.text }}</label>
+<input type="number" id="{{ q.id }}" name="{{ q.id }}" min="{{ q.min }}" max="{{ q.max }}" value="{{ answers.get(q.id, 7) }}" required>
+{% else %}
+<fieldset>
+<legend>{{ loop.index }}. {{ q.text }}</legend>
+<div class="opts">
+{% for o in q.options %}
+<label><input type="radio" name="{{ q.id }}" value="{{ o.value }}" required{% if answers.get(q.id) == o.value %} checked{% endif %}>{{ o.label }}</label>
+{% endfor %}
+</div>
+</fieldset>
+{% endif %}
+</div>
+{% endfor %}
+<div class="btns">
+<button type="submit">הצג את המסלול</button>
+<button type="submit" name="download" value="1" class="dl">הורד כקובץ</button>
+</div>
+</form>
+</div>
+</body>
+</html>

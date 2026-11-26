@@ -1,6 +1,8 @@
+import re
 from datetime import date
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
+from markupsafe import Markup, escape
 
 from app.matcher import QUESTIONS, make_plan, read_answers
 
@@ -88,6 +90,39 @@ def delete_book(book_id):
         return jsonify(detail="book not found"), 404
     del books[book_id]
     return "", 204
+
+
+JAPANESE = re.compile(r"[　-ヿ一-鿿]+")
+
+
+@app.template_filter("jp")
+def mark_japanese(text):
+    # keeps japanese station names readable inside hebrew lines
+    return Markup(JAPANESE.sub(r'<bdi class="jp">\g<0></bdi>', str(escape(text))))
+
+
+@app.get("/")
+def quiz():
+    return render_template("quiz.html", questions=QUESTIONS, answers={}, error=None)
+
+
+@app.post("/trip")
+def trip():
+    answers = request.form.to_dict()
+    profile, error = read_answers(answers)
+    if error:
+        page = render_template(
+            "quiz.html", questions=QUESTIONS, answers=answers, error=error
+        )
+        return page, 422
+    page = render_template("trip.html", plan=make_plan(profile))
+    if "download" in request.form:
+        return (
+            page,
+            200,
+            {"Content-Disposition": "attachment; filename=my-japan-trip.html"},
+        )
+    return page
 
 
 @app.get("/api/questions")

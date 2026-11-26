@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>הטיול שלי ליפן</title>
+<style>
+:root{--ink:#1b1530;--ink2:#4b4466;--paper:#fff8ec;--card:#fff;--line:#eadfce;--pink:#ff4f9a;--purple:#6c3bd1;--tokyo:#e4212b;--nagoya:#13a049;--osaka:#f2890a;--kobe:#f2890a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Rubik","Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:640px;margin:0 auto;padding:16px}
+header{background:var(--purple);color:#fff;border-radius:16px;padding:18px 18px 14px;margin-bottom:14px}
+header h1{margin:0 0 4px;font-size:24px}
+header p{margin:0;font-size:15px}
+.tags{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tags span{background:rgba(255,255,255,.2);border-radius:10px;padding:4px 10px;font-size:14px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:0;background:var(--paper);z-index:2}
+nav a{flex:none;text-decoration:none;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:4px 10px;font-size:14px}
+details{background:var(--card);border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;gap:10px}
+summary::-webkit-details-marker{display:none}
+.num{flex:none;width:38px;height:38px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.city{font-size:14px;color:var(--ink2)}
+.ttl{font-weight:700;font-size:16px}
+.body{padding:0 14px 8px}
+.move{background:#eef4ff;border-radius:10px;padding:6px 10px;font-size:15px;margin-bottom:6px}
+.it{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.tm{direction:ltr;text-align:right;font-family:Consolas,monospace;color:var(--ink2);font-size:15px}
+.x{font-weight:600}
+.jp{background:#f3eefc;border-radius:4px;padding:0 3px}
+.how{font-size:15px;color:var(--ink2)}
+.go{font-size:14px;color:var(--ink2);margin-top:2px}
+.act{display:flex;gap:14px;align-items:center;margin-top:4px;font-size:14px}
+.act a{color:var(--purple)}
+.meal{border-top:1px solid var(--line);padding:10px 0;font-size:15px}
+.meal b{font-weight:600}
+.alt{margin-top:4px;font-size:14px;background:#fff4e0;border-radius:8px;padding:4px 8px}
+.done .x{text-decoration:line-through;color:var(--ink2)}
+label.chk{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+footer{text-align:center;font-size:14px;color:var(--ink2);padding:16px 0}
+.btn{display:inline-block;background:var(--pink);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-size:15px;cursor:pointer}
+@media print{nav,.btn,.act label{display:none}details{break-inside:avoid}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>הטיול שלי ליפן</h1>
+<p>{{ plan.days|length }} ימים · {{ plan.cities|join(", ") }}</p>
+{% if plan.interests %}<div class="tags">{% for t in plan.interests %}<span>{{ t }}</span>{% endfor %}</div>{% endif %}
+</header>
+
+<nav>
+{% for day in plan.days %}<a href="#d{{ day.number }}">יום {{ day.number }}</a>{% endfor %}
+</nav>
+
+{% for day in plan.days %}
+<details id="d{{ day.number }}" open>
+<summary><span class="num" style="background:var(--{{ day.region }})">{{ day.number }}</span><span><span class="ttl">{{ day.title }}</span><br><span class="city">{{ day.region_name }}</span></span></summary>
+<div class="body">
+{% if day.transfer %}<div class="move">{{ day.transfer }}</div>{% endif %}
+{% for item in day["items"] %}
+<div class="it"><div class="tm">{{ item.time }}</div><div>
+<div class="x">{{ item.text }}</div>
+{% if item.get_there %}<div class="go">איך מגיעים: {{ item.get_there|jp }}</div>{% endif %}
+{% if item.how %}<div class="how">{{ item.how|jp }}</div>{% endif %}
+{% if item.snow_risk %}<div class="alt">בשלג או בקרח הכביש נסגר. בודקים תחזית לפני שיוצאים</div>{% endif %}
+<div class="act">{% if item.map %}<a href="https://www.google.com/maps/search/{{ item.map|urlencode }}">פתח במפה</a>{% endif %}</div>
+</div></div>
+{% endfor %}
+{% for meal in day.meals %}
+<div class="meal">
+<b>{{ meal.meal }} {{ meal.time }}:</b> {{ meal.main.name }}{% if meal.main.kind %} · {{ meal.main.kind }}{% endif %}
+{% if meal.main.note %}<div class="how">{{ meal.main.note }}</div>{% endif %}
+<div class="act"><a href="https://www.google.com/maps/search/{{ meal.main.map|urlencode }}">פתח במפה</a></div>
+{% if meal.alt %}<div class="alt">מלא? {{ meal.alt.name }}{% if meal.alt.kind %} · {{ meal.alt.kind }}{% endif %}</div>{% endif %}
+</div>
+{% endfor %}
+{% if not day["items"] and not day.meals %}<p class="how">יום פתוח: מנוחה, קניות, או לחזור למקום שאהבתם.</p>{% endif %}
+</div>
+</details>
+{% endfor %}
+
+<footer>
+<button class="btn" onclick="window.print()">שמור כ־PDF</button>
+<p>באייפון: שיתוף ← פתח ב־Safari, כדי לסמן "עשיתי"</p>
+<p>המידע מטיול אמיתי בינואר. שעות ומחירים משתנים, כדאי לבדוק לפני שיוצאים.</p>
+<p>נבנה ע״י Japan Trip Matcher</p>
+</footer>
+</div>
+<script>
+(function () {
+  var KEY = "trip-done";
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  document.querySelectorAll(".it").forEach(function (it, i) {
+    var act = it.querySelector(".act");
+    var label = document.createElement("label");
+    label.className = "chk";
+    var box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = !!done[i];
+    label.appendChild(box);
+    label.appendChild(document.createTextNode("עשיתי"));
+    act.insertBefore(label, act.firstChild);
+    it.classList.toggle("done", box.checked);
+    box.onchange = function () {
+      done[i] = box.checked;
+      it.classList.toggle("done", box.checked);
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+    };
+  });
+  document.querySelectorAll("details").forEach(function (d, i) { if (i > 0) d.open = false; });
+  window.onbeforeprint = function () {
+    document.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  };
+  document.querySelectorAll("nav a").forEach(function (a) {
+    a.onclick = function () {
+      var d = document.querySelector(a.getAttribute("href"));
+      if (d) d.open = true;
+    };
+  });
+})();
+</script>
+</body>
+</html>
